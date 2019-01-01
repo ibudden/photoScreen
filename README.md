@@ -23,3 +23,5 @@ Media is POPULATED
 Weather panel
 
 Install instructions
+
+Add comments and clean up code
