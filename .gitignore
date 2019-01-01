@@ -61,3 +61,4 @@ typings/
 .next
 client_id.json
 */config/*
+metoffice.json

@@ -4,7 +4,9 @@ Designed to show a slideshow of all of your google photos in a random order, in 
 
 WARNING:
 
-This is designed to be installed on an installed Raspberry PI. IT SHOULD NOT BE USED ON A PUBLIC WEB SERVER.
+This is designed to be installed on an installed Raspberry PI. 
+IT SHOULD NOT BE USED ON A PUBLIC WEB SERVER.
+
 The reason is that the client_id from Google is stored in the front end Javascript and so isn't very secure.
 
 
@@ -12,6 +14,8 @@ The reason is that the client_id from Google is stored in the front end Javascri
 TODO:
 
 Access Media - increments accessCount
+
+Move logic about showing  hiding Media Animator and weather to App.js
 
 Deleted media, or problem loading 
     - skips
