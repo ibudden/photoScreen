@@ -21,3 +21,5 @@ Media is POPULATED
     - top up to catch new images
 
 Weather panel
+
+Install instructions
