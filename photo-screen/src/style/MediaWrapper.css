@@ -1,0 +1,14 @@
+
+
+
+.mediaWrapper {
+    width: 100%;
+    overflow: hidden;
+    
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    
+    background-color: #000;
+    
+}
