@@ -22,7 +22,7 @@ export default function(state = getInitialState(), action) {
             
         case 'SET_LIBRARY_STATUS':
             return setLibraryStatus(state, action.status);
-            
+        
         case 'SET_NEXT_MEDIA':
             return setNextMedia(state, action.mediaObject);
             

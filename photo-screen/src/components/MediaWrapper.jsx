@@ -14,22 +14,25 @@ const axios = require('axios');
  */
 class MediaWrapper extends React.Component {
     
+    
     getNextMedia() {
         const context = this;
         return new Promise(function(resolve, reject) {  
             db.media.count().then(function (numRows) {
                 // only do if we have at least two rows
+                // console.log('Total rows:', numRows);
+                
                 if (numRows > 2) {
                     // otherwise get a random id
                     const offset = Math.floor(Math.random() * Math.floor(numRows));
-                    
                     // video 
                     // 'AF1QipM6mklCBzjrAhkbnp_OdVjw6hL1UFGdCPeLF6zJ'
                     // 
-                    
-                    //
+                    // 
+                    //.where({name: "David", age: 43})
                     db.media.offset(offset).limit(1).first().then(function (mediaItem) {
-                        // console.log('mediaItem',mediaItem.id.slice(-10));
+                    //db.media.offset(offset).limit(1).first().then(function (mediaItem) {
+                        console.log('mediaItem',mediaItem.googleId);
                         // now look up the full media info from google
                         return axios({
                             method: 'get',
@@ -49,31 +52,32 @@ class MediaWrapper extends React.Component {
                             
                         }).catch(function (error) {
                             reject(error);
-                            // if it's deleted, then delete the db row and throw an error (or re-call function)
                             
                         }).then(response => {
+                            
                             // otherwise - send it to the reducer
                             if (response && response.data) {
+                                // console.log(response.data);
                                 context.props.setNextMedia(response.data);
-                                
                                 // increment the accessCount
                                 //db.media.get(mediaItem.id).modify(function(mI) {
                                 //    mI.accessCount += 1; 
                                 //});
-                                
                                 resolve(true);
                                 
                             } else {
                                 reject('Error! No media returned.');
-                                
+                                // if it's deleted, then delete the db row and throw an error (or re-call function)
+                                db.media.where({id: mediaItem.id}).delete().then(function () {
+                                    // deleted row
+                                    console.log('Deleting row:', mediaItem.id)
+                                    context.getNextMedia();
+                                    
+                                });
                             }
                         });
-                        
                     });
-                    
-                    
                 }
-            
             });
         });
     }
@@ -112,11 +116,8 @@ class MediaWrapper extends React.Component {
     
     render() {
         const context = this;
-        const divStyle = {
-            'height': (window.innerHeight-35) + 'px'
-        };
         let key = 0;
-        return <div className="mediaWrapper" style={divStyle}>
+        return <div className="mediaWrapper">
             {this.getMediaItems().map(function (mediaItemData) {
                 if (mediaItemData.type === 'image')
                     return <ImageItemContainer getNextMedia={context.getNextMedia.bind(context)} key={'mediaItem-'+(key++)} {...mediaItemData} />

@@ -1,5 +1,4 @@
 
-import db from './db';
 /*
     Action creators are pass through functions - functions that you can use in your components, that trigger reducer functions
  */
@@ -47,38 +46,6 @@ export function setCredentials(credentials) {
         credentials: credentials
     };
 }
-
-export function addMedia(id, mediaType) {
-    // console.log('check',id, mediaType);
-    // see if the media exists
-    db.media.where({googleId: id}).first(mediaItem => {
-        
-        if (mediaItem && mediaItem.googleId) {
-            //console.log('action_creators.addMedia - Already in: '+id.slice(-10),mediaItem);
-            
-        } else {
-            db.media.add({
-                googleId: id, 
-                accessCount: 0,
-                timeAdded: new Date().getTime(),
-                mediaType: mediaType
-            }).then(function () {
-                //console.log('action_creators.addMedia - Added:',mediaType,id.slice(-10));
-                
-            }).catch(function (e) {
-                console.log("Error: " + (e.stack || e));
-            });
-        }
-            
-    }).catch(e => {
-        //console.log("Error: " + (e.stack || e));
-    });
-    
-    return {
-        type: 'ADD_MEDIA'
-    };
-}
-
 
 export function setLibraryPopulating() {
     console.log('action_creators.setLibraryPopulating');

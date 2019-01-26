@@ -2,14 +2,44 @@ import React from 'react';
 import {connect} from 'react-redux';
 //import Loader from 'react-loader-spinner'
 import * as actionCreators from '../action_creators';
+import db from './../db';
 const axios = require('axios');
 
 class Background extends React.Component {
     
+    addMedia(id, mediaType) {
+        return new Promise(function (resolve,reject) {
+            // console.log('check',id, mediaType);
+            // see if the media exists
+            db.media.where({googleId: id}).first(mediaItem => {
+                if (mediaItem && mediaItem.googleId) {
+                    // console.log('action_creators.addMedia - Already in: '+id.slice(-10));
+                    resolve(false);//, mediaItem
+                    
+                } else {
+                    db.media.add({
+                        googleId: id, 
+                        accessCount: 0,
+                        timeAdded: new Date().getTime(),
+                        mediaType: mediaType
+                    }).then(function () {
+                        console.log('action_creators.addMedia - Added: '+mediaType+' '+id.slice(-10));
+                        resolve(true);
+                        
+                    }).catch(function (e) {
+                        reject("Error: " + (e.stack || e));
+                    });
+                }
+                    
+            }).catch(e => {
+                reject("Error: " + (e.stack || e));
+            });
+        });
+    }
+    
     
     async getLibraryItems(nextPageToken) {
-        
-        //console.log('getLibraryItems');
+        // console.log('getLibraryItems');
         const context = this;
         
         const promise = new Promise(function(resolve, reject) {   
@@ -50,13 +80,17 @@ class Background extends React.Component {
                 }).then(response => {
                     if (response && response.data && response.data.mediaItems) {
                         
-                        for (let m = 0; m < response.data.mediaItems.length; m++)
-                            context.props.addMedia( response.data.mediaItems[m].id, response.data.mediaItems[m].mediaMetadata.video ? 'video' : 'image');
-                        
-                        // run the same function again
+                        const promises = [];
                         // 
-                        // reject('Temp');
-                        resolve ( response.data.nextPageToken );
+                        for (let m = 0; m < response.data.mediaItems.length; m++)
+                            promises.push( context.addMedia( response.data.mediaItems[m].id, response.data.mediaItems[m].mediaMetadata.video ? 'video' : 'image') );
+                            
+                        Promise.all(promises).then(function(added) {
+                            resolve ({ 
+                                nextPageToken: response.data.nextPageToken, 
+                                numAdded: added.filter(v => v).length 
+                            });
+                        });
                         
                     } else {
                         reject('No media returned');
@@ -74,52 +108,79 @@ class Background extends React.Component {
     
      */
     async populateLibrary(pageToken) {
-        //console.log('populateLibrary');
+        // console.log('populateLibrary');
         this.props.setLibraryPopulating();
         // if we've started populating - let's not start again
         this.startedPopulating = true;
         console.log(pageToken ? 'RESUME' : 'BEGIN','populateLibrary', pageToken ? pageToken.slice(-10) : null);
         
-        let nextPageToken = pageToken || 'first';
-        while (nextPageToken !== undefined) {
+        let mediaAddOutcome = {
+            nextPageToken: pageToken || 'first'
+        };
+        //
+        while (mediaAddOutcome.nextPageToken !== undefined) {
             // @todo needs then and catch here
-            nextPageToken = await this.getLibraryItems( nextPageToken !== 'first' ? nextPageToken : null);
+            mediaAddOutcome = await this.getLibraryItems( mediaAddOutcome.nextPageToken !== 'first' ? mediaAddOutcome.nextPageToken : null);
             // save in case we lose our progress
-            console.log('nextPageToken', typeof nextPageToken, nextPageToken ? nextPageToken.slice(-10) : null);
-            window.localStorage.setItem('libraryNextPageToken', nextPageToken);
-            
+            console.log('nextPageToken', typeof mediaAddOutcome.nextPageToken, mediaAddOutcome.nextPageToken ? mediaAddOutcome.nextPageToken.slice(-10) : null);
+            window.localStorage.setItem('libraryNextPageToken', mediaAddOutcome.nextPageToken);            
             // in case we lost the browser and we are half way through - we might need to restore this
         }
         // and when we're done - we won't need to redo
-        if (nextPageToken === undefined)
+        if (mediaAddOutcome.nextPageToken === undefined) {
             this.props.setLibraryPopulated();
+            // and set the top up process running
+            this.topUpLibrary();
+        }
             
         return true;
     }
     
     topUpLibrary() {
+        console.log('topUpLibrary')
+        this.toppingUp = true;
         
-        
+        setInterval(async function () {
+            let mediaAddOutcome = {
+                nextPageToken: 'first'
+            };
+            let emptyAttempts = 2;
+            
+            while (mediaAddOutcome.nextPageToken !== undefined) {
+                // @todo needs then and catch here
+                mediaAddOutcome = await this.getLibraryItems( mediaAddOutcome.nextPageToken !== 'first' ? mediaAddOutcome.nextPageToken : null);
+                // save in case we lose our progress
+                //console.log('nextPageToken', typeof mediaAddOutcome.nextPageToken, mediaAddOutcome.nextPageToken ? mediaAddOutcome.nextPageToken.slice(-10) : null);
+                console.log('numAdded', mediaAddOutcome.numAdded);
+                
+                if (mediaAddOutcome.numAdded === 0)
+                    emptyAttempts--;
+                    
+                //console.log('failedAttempts', emptyAttempts)
+                if (emptyAttempts <= 0) {
+                    //console.log('break')
+                    break;
+                }
+            }
+            
+        }, 1000*60*60);
     }
     
-    //componentWillMount() {
-    //}
-    
-    //componentDidMount() {
-    //    console.log('componentDidMount', window.localStorage.getItem('libraryStatus'), window.localStorage.getItem('libraryNextPageToken'))
-        // we hadn't got to the end of the populating - so we need to resume    
-    //}
     componentDidUpdate () {
         // we're empty - so we need to start adding
         if (this.props.loginStatus === 'LOGGED_IN') {
-            if (this.props.libraryStatus === 'EMPTY') {
-                this.populateLibrary();
+            //console.log('Background::componentDidUpdate', this.props);
             
-            } else if (!this.startedPopulating && this.props.libraryStatus === 'POPULATING' && window.localStorage.getItem('libraryNextPageToken') !== null) {
-                this.populateLibrary(window.localStorage.getItem('libraryNextPageToken'));
-    
+            if (!this.startedPopulating) {
+                if (this.props.libraryStatus === 'EMPTY' || this.props.libraryStatus === 'POPULATING') {
+                    //console.log('Background::EMPTY');
+                    this.populateLibrary(window.localStorage.getItem('libraryNextPageToken'));
+
+                } else if (this.props.libraryStatus === 'POPULATED' && !this.toppingUp) {
+                    this.topUpLibrary();
+                    
+                }
             }
-            
         }
     }
     render () {

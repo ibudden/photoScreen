@@ -1,8 +1,10 @@
+
 import React from 'react';
 import {connect} from 'react-redux';
 import GoogleLogin from 'react-google-login';
 import Loader from 'react-loader-spinner'
 import * as actionCreators from '../action_creators';
+import '../style/Login.css';
 const axios = require('axios');
 
 const googleConfig = require('../config/client_id');
@@ -29,24 +31,33 @@ class Login extends React.Component {
     }
     
     componentDidMount() {
+        //console.log('Login::componentDidMount');
         const context = this;
         //
         setTimeout(function () {
-            // if expires_at is still in the future - then log in
-            const loginExpiresIn = Math.round((context.props.expires_at - new Date().getTime())/1000);
-            if (loginExpiresIn > 60) {
-                // and mark the app as logged in
-                context.props.setLoggedIn();
+            if (context.props.loginCredentials['expires_at']) {
+                // if expires_at is still in the future - then log in
+                const loginExpiresIn = Math.round((context.props.loginCredentials.expires_at - new Date().getTime())/1000);
+                // console.log('loginExpiresIn',loginExpiresIn);
+                //
+                if (loginExpiresIn > 60) {
+                    // and mark the app as logged in
+                    context.props.setLoggedIn();
+                } else {
+                    // otherwise attempt a refresh
+                    context.loginRefresh()
+                }
             } else {
-                // otherwise attempt a refresh
-                context.loginRefresh()
+                context.props.setLoggedOut();
             }
         });
         // check to see if we need to refresh our log in token
         setInterval(function () {
-            if (context.props.loginStatus === 'LOGGED_IN' && context.props.expires_at) {
-                const loginExpiresIn = Math.round((context.props.expires_at - new Date().getTime())/1000);
-                //console.log('loginExpiresIn', loginExpiresIn);
+            if (context.props.loginStatus === 'LOGGED_IN' && context.props.loginCredentials['expires_at']) {
+                //
+                const loginExpiresIn = Math.round((context.props.loginCredentials.expires_at - new Date().getTime())/1000);
+                //console.log('loginExpiresIn',loginExpiresIn);
+                //
                 if (loginExpiresIn < 60 && this.props.loginStatus !== 'REFRESHING') {
                     // otherwise attempt a refresh
                     context.loginRefresh()
@@ -56,7 +67,7 @@ class Login extends React.Component {
     }
     
     loginRefresh() {
-        console.log('loginRefresh');
+        //console.log('Login::loginRefresh');
         const context = this;
         this.props.setLoginRefreshing();
         
@@ -65,7 +76,7 @@ class Login extends React.Component {
             method: 'post',
             url: 'https://www.googleapis.com/oauth2/v4/token',
             data: {
-                'refresh_token': context.props.refresh_token,
+                'refresh_token': context.props.loginCredentials.refresh_token,
                 'client_id': googleConfig.web.client_id,
                 'client_secret': googleConfig.web.client_secret,
                 'grant_type': 'refresh_token'
@@ -104,10 +115,12 @@ class Login extends React.Component {
     }
     
     loginError(codeResponse, details) {
+        //console.log('Login::loginError');
         this.props.setLoginError(details);
     }
     
     loginResponse(codeResponse) {
+        //console.log('Login::loginResponse');
         const context = this;
         context.props.setLoggingIn();
         
@@ -153,26 +166,28 @@ class Login extends React.Component {
     }
     
     render () {
+        //console.log('Login::render',this.props);
+        
         if (this.props.loginStatus === 'LOGGING_IN') {
-            return <Loader 
+            return <div className="loginWrapper"><Loader 
                  type="TailSpin"
                  color="#ccc"
                  height="50"	
                  width="50"
-                 />   
+                 /></div>;  
                  
         } else if (this.props.loginStatus === 'LOGGED_OUT') {
-            
-            return <GoogleLogin
+            //console.log('show login button')
+            return <div className="loginWrapper"><GoogleLogin
                 clientId={googleConfig.web.client_id}
-                buttonText="Login"
+                buttonText="Log-in to Google Photos"
                 responseType="code"
                 accessType="offline"
                 prompt="consent"
                 scope={scopes.join(' ')}
                 onSuccess={this.loginResponse.bind(this)}
                 onFailure={this.loginError.bind(this)}
-                />;
+                /></div>;
                 
         //} else if (this.props.loginStatus === 'REFRESHING') {
         //    return <div>Refreshing login</div>;
@@ -184,7 +199,7 @@ class Login extends React.Component {
 
 // most data is handed down, but we also need the page that is currently required to be selected
 function mapStateToProps(state, props) {
-    return state.get('loginCredentials').toJS();
+    return state.toJS();
 }
 // Export the wrapped version
 export const LoginContainer = connect(mapStateToProps,actionCreators)(Login);
