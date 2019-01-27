@@ -26,6 +26,12 @@ class Config extends React.Component {
     render() {
         
         const context = this;
+        
+        // IF LOGGED IN AND SETUP NOT COMPLETE SHOW - 
+        // OTHERWISE JUST SHOW ON BUTTON PRESS
+        
+        
+        
         return <div className="configWrapper"><div>
             <h2>Which hours would you like the screen to be active?</h2>
             {Object.keys(this.props.configSetup).map(function(day) {
