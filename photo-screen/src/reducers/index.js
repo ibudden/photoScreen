@@ -41,4 +41,4 @@ export default function(state = getInitialState(), action) {
             return state;
     }
 
-}
+};

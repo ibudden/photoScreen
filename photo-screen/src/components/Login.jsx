@@ -28,7 +28,7 @@ class Login extends React.Component {
             this.props.setCredentials(creds);
         }
         // check localStorage for login credentials - and log the user in if they exist
-    }
+    };
     
     componentDidMount() {
         //console.log('Login::componentDidMount');
@@ -64,7 +64,7 @@ class Login extends React.Component {
                 }
             }
         },5000);
-    }
+    };
     
     loginRefresh() {
         //console.log('Login::loginRefresh');
@@ -112,15 +112,15 @@ class Login extends React.Component {
                 context.props.setLoggedIn();
             }
         });
-    }
+    };
     
     loginError(codeResponse, details) {
-        //console.log('Login::loginError');
+        console.log('Login::loginError', codeResponse, details);
         this.props.setLoginError(details);
-    }
+    };
     
     loginResponse(codeResponse) {
-        //console.log('Login::loginResponse');
+        console.log('Login::loginResponse',codeResponse);
         const context = this;
         context.props.setLoggingIn();
         
@@ -163,10 +163,10 @@ class Login extends React.Component {
             }
         });
         
-    }
+    };
     
     render () {
-        //console.log('Login::render',this.props);
+        console.log('Login::render',this.props);
         
         if (this.props.loginStatus === 'LOGGING_IN') {
             return <div className="loginWrapper"><Loader 
@@ -194,7 +194,7 @@ class Login extends React.Component {
                 
         } else 
             return null;
-    }
+    };
 }
 
 // most data is handed down, but we also need the page that is currently required to be selected

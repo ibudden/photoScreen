@@ -13,7 +13,7 @@ plugins:
 custom:
   serverless-offline:
     port: 3000
-#  webpackIncludeModules: true
+  webpackIncludeModules: true
 
 functions:
   index:

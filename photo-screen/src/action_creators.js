@@ -8,21 +8,22 @@ export function setLoggingIn() {
         type: 'SET_LOGIN_STATUS',
         status: 'LOGGING_IN'
     };
-}
-export function setLoginError() {
+};
+export function setLoginError( errorDetails ) {
     // console.log('action_creators.setLoginError');
     return {
         type: 'SET_LOGIN_STATUS',
-        status: 'LOGGING_IN'
+        status: 'LOGIN_ERROR',
+        error: errorDetails
     };
-}
+};
 export function setLoginRefreshing() {
     // console.log('action_creators.setLoginRefreshing');
     return {
         type: 'SET_LOGIN_STATUS',
         status: 'REFRESHING'
     };
-}
+};
 export function setLoggedIn() {
     // console.log('action_creators.setLoggedIn');
     // and then update the app status
@@ -30,7 +31,7 @@ export function setLoggedIn() {
         type: 'SET_LOGIN_STATUS',
         status: 'LOGGED_IN'
     };
-}
+};
 export function setLoggedOut() {
     // console.log('action_creators.setLoggedOut');
     // 
@@ -38,14 +39,14 @@ export function setLoggedOut() {
         type: 'SET_LOGIN_STATUS',
         status: 'LOGGED_OUT'
     };
-}
+};
 export function setCredentials(credentials) {
     // console.log('action_creators.setCredentials', credentials);
     return {
         type: 'SET_CREDENTIALS',
         credentials: credentials
     };
-}
+};
 
 export function setLibraryPopulating() {
     // console.log('action_creators.setLibraryPopulating');
@@ -56,7 +57,7 @@ export function setLibraryPopulating() {
         type: 'SET_LIBRARY_STATUS',
         status: 'POPULATING'
     };
-}
+};
 
 export function setLibraryPopulated() {
     // console.log('action_creators.setLibraryPopulated');
@@ -67,7 +68,7 @@ export function setLibraryPopulated() {
         type: 'SET_LIBRARY_STATUS',
         status: 'POPULATED'
     };
-}
+};
 
 export function setConfigComplete() {
    // console.log('action_creators.setConfigComplete');
@@ -75,7 +76,7 @@ export function setConfigComplete() {
        type: 'SET_CONFIG_STATUS',
        status: 'COMPLETE'
    };
-}
+};
 
 export function setScreenActive( newState ) {
    // console.log('action_creators.setConfigComplete');
@@ -83,7 +84,7 @@ export function setScreenActive( newState ) {
        type: 'SET_SCREEN_ACTIVE',
        newState: newState === false ? false : true
    };
-}
+};
 
 export function setNextMedia( mediaObject ) {
    // console.log('action_creators.setNextMedia', mediaObject);
@@ -92,7 +93,7 @@ export function setNextMedia( mediaObject ) {
        type: 'SET_NEXT_MEDIA',
        mediaObject: mediaObject
    };
-}
+};
 
 export function setFadedIn() {
    // console.log('action_creators.setFadedIn');
@@ -100,7 +101,7 @@ export function setFadedIn() {
    return {
        type: 'SET_FADED_IN'
    };
-}
+};
 
 export function toggleConfigHour ( day, hour ) {
    // console.log('action_creators.toggleConfigHour', day, hour);
