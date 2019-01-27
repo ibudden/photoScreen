@@ -93,3 +93,13 @@ export function setFadedIn() {
        type: 'SET_FADED_IN'
    };
 }
+
+export function toggleConfigHour ( day, hour ) {
+   // console.log('action_creators.toggleConfigHour', day, hour);
+   // we calculate a random number by finding the number of rows and using limit
+   return {
+       type: 'TOGGLE_CONFIG_HOUR',
+       day: day,
+       hour: hour
+   };
+};

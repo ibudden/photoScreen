@@ -1,0 +1,48 @@
+
+
+.configWrapper {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    
+    width: 100%;
+    height: 100%;
+    z-index: 101;
+    background-color: #000;
+}
+
+.configWrapper > div {
+    padding-left: 20px;
+    overflow: auto;
+    height: 100%;
+}
+
+.configWrapper .configDay:last-child {
+    padding-bottom: 40px;
+}
+
+.configWrapper button {
+    border-radius: 50%;
+    border: 2px solid white;
+    width: 34px;
+    height: 34px;
+    font-weight: bold;
+    text-align: center;
+    margin-right: 5px;
+    font-size: 1.1em;
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+.configWrapper button.active {
+    background-color: #fff;
+    color: #000;
+}
+
+.configWrapper button span {
+    margin-left: -7px;
+    width: 28px;
+    text-align: center;
+    display: inline-block;
+}

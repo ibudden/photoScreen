@@ -7,6 +7,7 @@ import {setConfigStatus} from './setConfigStatus';
 import {setCredentials} from './setCredentials';
 import {setNextMedia} from './setNextMedia';
 import {setFadedIn} from './setFadedIn';
+import {toggleConfigHour} from './toggleConfigHour';
 
 
 export default function(state = getInitialState(), action) {
@@ -28,6 +29,9 @@ export default function(state = getInitialState(), action) {
             
         case 'SET_FADED_IN':
             return setFadedIn(state);
+        
+        case 'TOGGLE_CONFIG_HOUR':
+            return toggleConfigHour(state, action.day, action.hour);
             
         default:
             return state;
