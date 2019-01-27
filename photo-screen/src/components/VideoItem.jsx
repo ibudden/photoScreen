@@ -24,11 +24,9 @@ class VideoItem extends React.Component {
         }
     }
     componentDidUpdate () {
-        console.log('componentDidUpdate');
         this.itemBegins();
     }
     componentDidMount() {
-        console.log('componentDidMount');
         this.itemBegins();   
     }
     

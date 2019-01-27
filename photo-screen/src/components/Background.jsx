@@ -137,7 +137,7 @@ class Background extends React.Component {
     }
     
     topUpLibrary() {
-        console.log('topUpLibrary')
+        // console.log('topUpLibrary')
         this.toppingUp = true;
         
         setInterval(async function () {
@@ -150,7 +150,7 @@ class Background extends React.Component {
                 // @todo needs then and catch here
                 mediaAddOutcome = await this.getLibraryItems( mediaAddOutcome.nextPageToken !== 'first' ? mediaAddOutcome.nextPageToken : null);
                 // save in case we lose our progress
-                //console.log('nextPageToken', typeof mediaAddOutcome.nextPageToken, mediaAddOutcome.nextPageToken ? mediaAddOutcome.nextPageToken.slice(-10) : null);
+                // console.log('nextPageToken', typeof mediaAddOutcome.nextPageToken, mediaAddOutcome.nextPageToken ? mediaAddOutcome.nextPageToken.slice(-10) : null);
                 console.log('numAdded', mediaAddOutcome.numAdded);
                 
                 if (mediaAddOutcome.numAdded === 0)

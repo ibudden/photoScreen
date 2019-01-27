@@ -7,11 +7,60 @@
     
     width: 100%;
     height: 100%;
-    z-index: 101;
-    background-color: #000;
+    z-index: 100;
 }
 
-.configWrapper > div {
+.configWrapper .closeButton {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 1;
+    z-index: 102;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 1s;
+    transition-delay: 0s;
+}
+.configWrapper .closeButton.visible {
+    opacity: 1;
+}
+
+.configWrapper .closeButton button {
+    background-color: #fff;
+    color: #000;
+}
+
+.configWrapper .closeButton.open button {
+    background-color: #000;
+    color: #fff;
+}
+
+.configWrapper .closeButton.visible {
+    display: none;
+    display: block;
+}
+
+.configWrapper .closeButton i {
+    margin-left: -5px;
+    margin-top: 3px;
+}
+
+.configWrapper .configPanel {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    display: none;
+    z-index: 101;
+}
+
+.configWrapper .configPanel.open {
+    display: block;
+}
+
+.configWrapper .configPanel > div {
     padding-left: 20px;
     overflow: auto;
     height: 100%;
@@ -29,6 +78,7 @@
     font-weight: bold;
     text-align: center;
     margin-right: 5px;
+    margin-bottom: 5px;
     font-size: 1.1em;
     background-color: #000;
     color: #fff;

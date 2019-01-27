@@ -6,7 +6,7 @@
     bottom: 6px;
     
     width: 100%;
-    z-index: 100;
+    z-index: 99;
     
     font-size: 6em;
 }

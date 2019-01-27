@@ -48,7 +48,7 @@ export function setCredentials(credentials) {
 }
 
 export function setLibraryPopulating() {
-    console.log('action_creators.setLibraryPopulating');
+    // console.log('action_creators.setLibraryPopulating');
     // 
     window.localStorage.setItem('libraryStatus','POPULATING');
     
@@ -59,7 +59,7 @@ export function setLibraryPopulating() {
 }
 
 export function setLibraryPopulated() {
-    console.log('action_creators.setLibraryPopulated');
+    // console.log('action_creators.setLibraryPopulated');
     // 
     window.localStorage.setItem('libraryStatus','POPULATED');
     
@@ -70,10 +70,18 @@ export function setLibraryPopulated() {
 }
 
 export function setConfigComplete() {
-   console.log('action_creators.setConfigComplete');
+   // console.log('action_creators.setConfigComplete');
    return {
        type: 'SET_CONFIG_STATUS',
        status: 'COMPLETE'
+   };
+}
+
+export function setScreenActive( newState ) {
+   // console.log('action_creators.setConfigComplete');
+   return {
+       type: 'SET_SCREEN_ACTIVE',
+       newState: newState === false ? false : true
    };
 }
 

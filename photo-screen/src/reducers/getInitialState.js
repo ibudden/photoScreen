@@ -1,5 +1,5 @@
 
-import {Map} from 'immutable';
+import {Map,List} from 'immutable';
 
 /*
 
@@ -7,22 +7,23 @@ import {Map} from 'immutable';
 
  */
 function defaultConfig() {
-    const config = {};
-    
-    ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(function (day) {
-        config[day] = [];
-        
-        for(let t = 0; t < 24; t++)
+    const config = [];
+    let dayConf = [];
+    for (let day = 0; day < 7; day++) {
+        dayConf = [];
+        for(let t = 0; t < 24; t++) {
             if ((t >= 7 && t <= 9) || (t >= 17 && t <= 22))
-                config[day].push(true);
+                dayConf.push(true);
                 
-            else if ((day === 'Saturday' || day === 'Sunday') && (t >= 7 && t <= 22))
-                config[day].push(true);
+            else if ((day === 0 || day === 6) && (t >= 7 && t <= 22))
+                dayConf.push(true);
                 
             else
-                config[day].push(false);
-    });
-    return Map(config);
+                dayConf.push(false);
+        }
+        config.push(List(dayConf));
+    }
+    return List(config);
 }
 
 
@@ -34,20 +35,22 @@ export const getInitialState = function getInitialState() {
     let configSetup = window.localStorage.getItem('configSetup');
     
     if (configSetup)
-        configSetup = Map(JSON.parse(configSetup));
+        configSetup = List(JSON.parse(configSetup));
     
     let state = Map({ 
         // tells the app how to behave
         loginStatus: 'NOT_SURE_YET',
         loginCredentials: Map(),
         // done config
-        configStatus: window.localStorage.getItem('configStatus') || 'COMPLETE', //'NOT_SET',
+        configStatus: window.localStorage.getItem('configStatus') || 'NOT_SET', //'',
         configSetup: configSetup || defaultConfig(),
         // tells the background media getting process how to behave
         libraryStatus: window.localStorage.getItem('libraryStatus') || 'EMPTY',
         // currently showing media
         oldMediaItem: null,
-        newMediaItem: null
+        newMediaItem: null,
+        // should the screen be playing? Controlled by the Config controller
+        screenIsActive: true
     });
         
     return state;

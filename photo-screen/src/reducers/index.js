@@ -7,6 +7,7 @@ import {setConfigStatus} from './setConfigStatus';
 import {setCredentials} from './setCredentials';
 import {setNextMedia} from './setNextMedia';
 import {setFadedIn} from './setFadedIn';
+import {setScreenActive} from './setScreenActive';
 import {toggleConfigHour} from './toggleConfigHour';
 
 
@@ -20,6 +21,9 @@ export default function(state = getInitialState(), action) {
             
         case 'SET_CONFIG_STATUS':
             return setConfigStatus(state, action.status);
+            
+        case 'SET_SCREEN_ACTIVE':
+            return setScreenActive(state, action.newState);
             
         case 'SET_LIBRARY_STATUS':
             return setLibraryStatus(state, action.status);
