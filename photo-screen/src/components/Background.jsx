@@ -23,7 +23,7 @@ class Background extends React.Component {
                         timeAdded: new Date().getTime(),
                         mediaType: mediaType
                     }).then(function () {
-                        console.log('action_creators.addMedia - Added: '+mediaType+' '+id.slice(-10));
+                        //console.log('action_creators.addMedia - Added: '+mediaType+' '+id.slice(-10));
                         resolve(true);
                         
                     }).catch(function (e) {
@@ -122,7 +122,7 @@ class Background extends React.Component {
             // @todo needs then and catch here
             mediaAddOutcome = await this.getLibraryItems( mediaAddOutcome.nextPageToken !== 'first' ? mediaAddOutcome.nextPageToken : null);
             // save in case we lose our progress
-            console.log('nextPageToken', typeof mediaAddOutcome.nextPageToken, mediaAddOutcome.nextPageToken ? mediaAddOutcome.nextPageToken.slice(-10) : null);
+            // console.log('nextPageToken', typeof mediaAddOutcome.nextPageToken, mediaAddOutcome.nextPageToken ? mediaAddOutcome.nextPageToken.slice(-10) : null);
             window.localStorage.setItem('libraryNextPageToken', mediaAddOutcome.nextPageToken);            
             // in case we lost the browser and we are half way through - we might need to restore this
         }

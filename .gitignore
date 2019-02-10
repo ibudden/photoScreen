@@ -62,3 +62,4 @@ typings/
 client_id.json
 */config/*
 metoffice.json
+photo-screen/.serverless/*

@@ -4,10 +4,14 @@
     position: absolute;
     left: 0px;
     bottom: 0px;
-    
+    cursor: none;
     width: 100%;
     height: 100%;
     z-index: 100;
+}
+
+.configWrapper.visible {
+    cursor: pointer;
 }
 
 .configWrapper .closeButton {
@@ -21,7 +25,7 @@
     transition-duration: 1s;
     transition-delay: 0s;
 }
-.configWrapper .closeButton.visible {
+.configWrapper.visible .closeButton {
     opacity: 1;
 }
 
@@ -29,19 +33,21 @@
     background-color: #fff;
     color: #000;
 }
+.configWrapper .closeButton button:focus {
+    outline: none;
+}
 
 .configWrapper .closeButton.open button {
     background-color: #000;
     color: #fff;
 }
 
-.configWrapper .closeButton.visible {
+.configWrapper.visible .closeButton {
     display: none;
     display: block;
 }
 
 .configWrapper .closeButton i {
-    margin-left: -5px;
     margin-top: 3px;
 }
 
@@ -83,6 +89,7 @@
     background-color: #000;
     color: #fff;
     cursor: pointer;
+    padding: 0;
 }
 
 .configWrapper button.active {
@@ -91,7 +98,7 @@
 }
 
 .configWrapper button span {
-    margin-left: -7px;
+    margin-top: 1px;
     width: 28px;
     text-align: center;
     display: inline-block;

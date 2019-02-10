@@ -97,6 +97,11 @@ class Config extends React.Component {
         
         const context = this;
         
+        const wrapperClass = classNames({
+            configWrapper: true,
+            visible: this.state.buttonVisible || this.state.open
+        })
+        
         const configClass = classNames({
             configPanel: true,
             open: this.state.open //
@@ -104,13 +109,12 @@ class Config extends React.Component {
         
         const buttonClass = classNames({
             closeButton: true,
-            open: this.state.open,
-            visible: this.state.buttonVisible || this.state.open
+            open: this.state.open
         })
         
         const buttonIcon = this.state.open ? 'close' : 'settings';
         
-        return <div className="configWrapper" onMouseMove={this.onMouseMove.bind(this)}>
+        return <div className={wrapperClass} onMouseMove={this.onMouseMove.bind(this)}>
             <div className={buttonClass}><button onClick={this.toggleOpen.bind(this)}><i className="material-icons md-24 md-light">{buttonIcon}</i></button></div>
             <div className={configClass}>
                 <div>

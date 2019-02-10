@@ -31,11 +31,16 @@ class Login extends React.Component {
     };
     
     componentDidMount() {
-        //console.log('Login::componentDidMount');
+        console.log('Login::componentDidMount');
         const context = this;
         //
         setTimeout(function () {
-            if (context.props.loginCredentials['expires_at']) {
+            // console.log('Login::componentDidMount 1', context.props.loginCredentials);
+            if (context.props.loginStatus === 'REFRESHING') {
+                // resume a failed refresh
+                context.loginRefresh();
+                
+            } else if (context.props.loginCredentials['expires_at']) {
                 // if expires_at is still in the future - then log in
                 const loginExpiresIn = Math.round((context.props.loginCredentials.expires_at - new Date().getTime())/1000);
                 // console.log('loginExpiresIn',loginExpiresIn);
@@ -67,7 +72,7 @@ class Login extends React.Component {
     };
     
     loginRefresh() {
-        //console.log('Login::loginRefresh');
+        console.log('Login::loginRefresh');
         const context = this;
         this.props.setLoginRefreshing();
         
@@ -90,6 +95,7 @@ class Login extends React.Component {
             }],
             
         }).catch(function (error) {
+            console.log('Login::loginRefreshError',error);
             // handle error
             context.props.setLoginError(error);
             // and mark the app as logged out
@@ -98,7 +104,7 @@ class Login extends React.Component {
         }).then(response => {
             if (response && response.data && response.data.expires_in) {
                 // update the access code and expire time
-                const updatedCreds = Object.assign({}, context.props);
+                const updatedCreds = Object.assign({}, context.props.loginCredentials);
                 //setTime
                 const now = new Date();
                 updatedCreds.expires_in = response.data.expires_in;
@@ -131,7 +137,7 @@ class Login extends React.Component {
                 'code': codeResponse.code,
                 'client_id': googleConfig.web.client_id,
                 'client_secret': googleConfig.web.client_secret,
-                'redirect_uri': googleConfig.web.redirect_uris[0],
+                'redirect_uri': window.location.protocol + "//" + window.location.host,
                 'grant_type': 'authorization_code'
             },
             transformResponse: [function (data) {
@@ -143,6 +149,7 @@ class Login extends React.Component {
             }],
             
         }).catch(function (error) {
+            console.log('loginError',error);
             // handle error
             context.props.setLoginError(error);
             // and mark the app as logged out
@@ -166,8 +173,6 @@ class Login extends React.Component {
     };
     
     render () {
-        console.log('Login::render',this.props);
-        
         if (this.props.loginStatus === 'LOGGING_IN') {
             return <div className="loginWrapper"><Loader 
                  type="TailSpin"
@@ -176,7 +181,7 @@ class Login extends React.Component {
                  width="50"
                  /></div>;  
                  
-        } else if (this.props.loginStatus === 'LOGGED_OUT') {
+        } else if (this.props.loginStatus === 'LOGGED_OUT' || this.props.loginStatus === 'LOGIN_ERROR') {
             //console.log('show login button')
             return <div className="loginWrapper"><GoogleLogin
                 clientId={googleConfig.web.client_id}

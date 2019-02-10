@@ -10,7 +10,7 @@ export function setLoggingIn() {
     };
 };
 export function setLoginError( errorDetails ) {
-    // console.log('action_creators.setLoginError');
+    // console.log('action_creators.setLoginError', errorDetails);
     return {
         type: 'SET_LOGIN_STATUS',
         status: 'LOGIN_ERROR',
