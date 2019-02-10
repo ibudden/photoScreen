@@ -51,10 +51,12 @@ class MediaWrapper extends React.Component {
                                 }],
                                 
                             }).catch(function (error) {
+                                
                                 reject(error);
+                                // if it's deleted, then throw an error and re-call function
+                                context.getNextMedia();
                                 
                             }).then(response => {
-                                
                                 // otherwise - send it to the reducer
                                 if (response && response.data) {
                                     // console.log(response.data);
@@ -67,7 +69,7 @@ class MediaWrapper extends React.Component {
                                     
                                 } else {
                                     reject('Error! No media returned.');
-                                    // if it's deleted, then delete the db row and throw an error (or re-call function)
+                                    // if it's deleted, then throw an error and re-call function
                                     context.getNextMedia();
                                 }
                             });

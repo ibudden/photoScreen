@@ -29,6 +29,9 @@ class Clock extends React.Component {
             if (screenIsActive !== context.props.screenIsActive)
                 context.props.setScreenActive( screenIsActive );
             
+            // @TODO reload every midnight - to get up to date code...
+            
+            
         }, 5000);
     }
     
