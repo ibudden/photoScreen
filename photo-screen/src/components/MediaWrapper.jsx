@@ -68,12 +68,7 @@ class MediaWrapper extends React.Component {
                                 } else {
                                     reject('Error! No media returned.');
                                     // if it's deleted, then delete the db row and throw an error (or re-call function)
-                                    db.media.where({id: mediaItem.id}).delete().then(function () {
-                                        // deleted row
-                                        console.log('Deleting row:', mediaItem.id)
-                                        context.getNextMedia();
-                                        
-                                    });
+                                    context.getNextMedia();
                                 }
                             });
                         });
