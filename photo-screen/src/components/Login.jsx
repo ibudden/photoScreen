@@ -61,9 +61,9 @@ class Login extends React.Component {
             if (context.props.loginStatus === 'LOGGED_IN' && context.props.loginCredentials['expires_at']) {
                 //
                 const loginExpiresIn = Math.round((context.props.loginCredentials.expires_at - new Date().getTime())/1000);
-                //console.log('loginExpiresIn',loginExpiresIn);
+                // console.log('loginExpiresIn',loginExpiresIn);
                 //
-                if (loginExpiresIn < 60 && this.props.loginStatus !== 'REFRESHING') {
+                if (loginExpiresIn < 60 && context.props.loginStatus !== 'REFRESHING') {
                     // otherwise attempt a refresh
                     context.loginRefresh()
                 }
@@ -87,6 +87,7 @@ class Login extends React.Component {
                 'grant_type': 'refresh_token'
             },
             transformResponse: [function (data) {
+                // console.log('Login::transformResponse',data);
                 // Do whatever you want to transform the data
                 if (data)
                     return JSON.parse(data)
@@ -95,13 +96,14 @@ class Login extends React.Component {
             }],
             
         }).catch(function (error) {
-            console.log('Login::loginRefreshError',error);
+            // console.log('Login::loginRefreshError',error);
             // handle error
             context.props.setLoginError(error);
             // and mark the app as logged out
             context.props.setLoggedOut();
         
         }).then(response => {
+            // console.log('Login::response',response);
             if (response && response.data && response.data.expires_in) {
                 // update the access code and expire time
                 const updatedCreds = Object.assign({}, context.props.loginCredentials);
@@ -126,7 +128,7 @@ class Login extends React.Component {
     };
     
     loginResponse(codeResponse) {
-        console.log('Login::loginResponse',codeResponse);
+        // console.log('Login::loginResponse',codeResponse);
         const context = this;
         context.props.setLoggingIn();
         
