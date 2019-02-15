@@ -96,7 +96,7 @@ class Login extends React.Component {
             }],
             
         }).catch(function (error) {
-            // console.log('Login::loginRefreshError',error);
+            console.log('Login::loginRefreshError',error);
             // handle error
             context.props.setLoginError(error);
             // and mark the app as logged out
